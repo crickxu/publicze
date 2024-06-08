@@ -6,12 +6,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="fastdfs" />
         <module name="publicze_platform" />
         <module name="publicze" />
         <module name="test" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="8">
+      <module name="fastdfs" target="1.8" />
       <module name="parent" target="1.8" />
       <module name="publicze" target="1.8" />
       <module name="publicze_platform" target="1.8" />
@@ -21,6 +23,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="fastdfs" options="-parameters" />
       <module name="parent" options="" />
       <module name="publicze" options="-parameters" />
       <module name="publicze_platform" options="-parameters" />

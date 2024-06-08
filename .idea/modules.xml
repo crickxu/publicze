@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/enterprise_publicze.iml" filepath="$PROJECT_DIR$/.idea/enterprise_publicze.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fastdfs/fastdfs.iml" filepath="$PROJECT_DIR$/fastdfs/fastdfs.iml" />
       <module fileurl="file://$PROJECT_DIR$/parent/parent.iml" filepath="$PROJECT_DIR$/parent/parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/publicze/publicze.iml" filepath="$PROJECT_DIR$/publicze/publicze.iml" />
       <module fileurl="file://$PROJECT_DIR$/publicze_platform/publicze_platform.iml" filepath="$PROJECT_DIR$/publicze_platform/publicze_platform.iml" />
