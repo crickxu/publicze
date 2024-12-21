@@ -6,6 +6,10 @@ import com.platform.publicze_platform.Dao.CompanyInfo;
 import com.platform.publicze_platform.Pojo.CompanyInfoMapper;
 import com.platform.publicze_platform.Service.CompanyInfoService;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 @Service
 public class CompanyInfoServiceImpl implements CompanyInfoService {
 
@@ -18,8 +22,22 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
     }
 
     @Override
-    public int insert(CompanyInfo record) {
-        return companyInfoMapper.insert(record);
+    public String insert(CompanyInfo record) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+            String timestamp = "CP" + sdf.format(new Date());
+            record.companyNo = timestamp;
+            record.createTime = new Date();
+            int count = companyInfoMapper.insert(record);
+            if (count > 0)
+                return record.companyNo;
+            return null;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
@@ -41,6 +59,20 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
     public int updateByPrimaryKey(CompanyInfo record) {
         return companyInfoMapper.updateByPrimaryKey(record);
     }
-
+    @Override
+    public CompanyInfo selectByCompanyInfo(String companyNo)
+    {
+        return companyInfoMapper.selectByCompanyInfo(companyNo);
+    }
+    @Override
+    public int updateImgPathByCompanyNo(String companyNo,String imgPath)
+    {
+        return companyInfoMapper.updateImgPathByCompanyNo(companyNo,imgPath);
+    }
+    @Override
+    public List<CompanyInfo> selectCompanys()
+    {
+        return companyInfoMapper.selectCompanys();
+    }
 }
 

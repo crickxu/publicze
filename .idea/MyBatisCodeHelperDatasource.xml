@@ -51,6 +51,28 @@
                 <TableGenerateConfig>
                   <option name="generatedKey" value="id" />
                   <option name="javaModelName" value="ImgCompanyInfo" />
+                  <option name="methodNameList">
+                    <list>
+                      <option value="insertList" />
+                    </list>
+                  </option>
+                  <option name="moduleName" value="publicze_platform" />
+                  <option name="sequenceColumn" value="" />
+                  <option name="sequenceId" value="" />
+                  <option name="useActualColumnName" value="false" />
+                </TableGenerateConfig>
+              </value>
+            </entry>
+            <entry key="publicze:profession">
+              <value>
+                <TableGenerateConfig>
+                  <option name="generatedKey" value="id" />
+                  <option name="javaModelName" value="Profession" />
+                  <option name="methodNameList">
+                    <list>
+                      <option value="getByAll" />
+                    </list>
+                  </option>
                   <option name="moduleName" value="publicze_platform" />
                   <option name="sequenceColumn" value="" />
                   <option name="sequenceId" value="" />
@@ -109,6 +131,11 @@
                 <TableGenerateConfig>
                   <option name="generatedKey" value="id" />
                   <option name="javaModelName" value="VideoCompanyInfo" />
+                  <option name="methodNameList">
+                    <list>
+                      <option value="insertList" />
+                    </list>
+                  </option>
                   <option name="moduleName" value="publicze_platform" />
                   <option name="sequenceColumn" value="" />
                   <option name="sequenceId" value="" />

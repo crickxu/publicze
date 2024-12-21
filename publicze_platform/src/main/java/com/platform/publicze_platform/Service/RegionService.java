@@ -2,7 +2,8 @@ package com.platform.publicze_platform.Service;
 
 import java.util.List;
 import com.platform.publicze_platform.Dao.Region;
-public interface RegionService{
+
+public interface RegionService {
 
 
     int deleteByPrimaryKey(Integer id);
@@ -19,4 +20,6 @@ public interface RegionService{
 
     List<Region> getAllByParenRegionNo(String parenRegionNo);
 
+    List<Region> getByAll(Region region);
 }
+

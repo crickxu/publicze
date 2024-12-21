@@ -20,4 +20,10 @@ public class RegionController {
         List<Region> regions = regionService.getAllByParenRegionNo("0000");
         return regions;
     }
+    @GetMapping("getRegions")
+    public List<Region> getRegions()
+    {
+        List<Region> regions = regionService.getByAll(new Region());
+        return regions;
+    }
 }

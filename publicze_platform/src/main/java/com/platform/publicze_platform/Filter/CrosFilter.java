@@ -15,7 +15,9 @@ public class CrosFilter implements javax.servlet.Filter {
         HttpServletResponse res = (HttpServletResponse) servletResponse;
         //*号表示对所有请求都允许跨域访问
         res.addHeader("Access-Control-Allow-Origin", "*");
+        res.addHeader("Access-Control-Allow-Headers", " Origin, X-Requested-With, Content-Type, Accept");
         res.addHeader("Access-Control-Allow-Methods", "*");
+        res.addHeader("Content-Type","application/json;charset=utf-8");
         filterChain.doFilter(servletRequest, servletResponse);
     }
     @Override

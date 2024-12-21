@@ -43,7 +43,7 @@ public class FastDSFClientImpl implements FastDSFClient {
         // 接收返回数据
         String[] uploadResults = null;
         StorageClient storageClient = null;
-        String ext =fileName.split(".")[1];
+        String ext =fileName.split("\\.")[1];
         try {
             // 创建 StorageClient 客户端对象
             storageClient = getTrackerClient();

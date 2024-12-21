@@ -1,6 +1,6 @@
 package com.platform.publicze_platform.Service;
 
-import com.platform.publicze_platform.Dao.VideoCompanyInfo;
+import com.platform.publicze_platform.Dao.VideoCompanyInfo;import java.util.List;
 
 public interface VideoCompanyInfoService {
 
@@ -13,9 +13,13 @@ public interface VideoCompanyInfoService {
 
     VideoCompanyInfo selectByPrimaryKey(Integer id);
 
+    List<VideoCompanyInfo> selectByCompanyNo(String companyNo);
+
     int updateByPrimaryKeySelective(VideoCompanyInfo record);
 
     int updateByPrimaryKey(VideoCompanyInfo record);
 
+    int insertList(List<VideoCompanyInfo> list);
 }
+
 

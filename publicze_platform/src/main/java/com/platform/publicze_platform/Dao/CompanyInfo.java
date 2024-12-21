@@ -5,85 +5,109 @@ import lombok.Data;
 
 @Data
 public class CompanyInfo {
-    private Integer id;
+    public Integer id;
 
     /**
      * 公司编号
      */
-    private String companyNo;
+    public String companyNo;
 
     /**
      * 用户编号
      */
-    private String userNo;
+    public String userNo;
 
     /**
      * 公司名称
      */
-    private String name;
+    public String name;
 
     /**
      * 统一信用代码
      */
-    private String creditCode;
+    public String creditCode;
 
     /**
      * 0:国企1：央企2：民营企业
      */
-    private Integer natureId;
+    public Integer natureId;
 
+    public String natureName;
     /**
      * 公司规模
      */
-    private Integer scale;
+    public Integer scale;
 
     /**
      * 所在省
      */
-    private String provinceAddr;
+    public String provinceAddr;
+    /**
+     * 所在省名称
+     */
+    public String provinceAddrName;
 
     /**
      * 所在市
      */
-    private String cityAddr;
+    public String cityAddr;
+    /**
+     * 所在市名称
+     */
+    public String cityAddrName;
 
     /**
      * 具体地址
      */
-    private String contact;
+    public String contact;
 
     /**
      * 公司介绍
      */
-    private String introduction;
+    public String introduction;
 
     /**
      * 联系号码
      */
-    private String mobileNum;
+    public String mobileNum;
 
     /**
      * 图片路径
      */
-    private String imgPath;
+    public String imgPath;
 
     /**
      * 发布类型(0-企业资源 1-企业融资 2-企业合作 3-企业代理，可多种组合)
      */
-    private Integer eventType;
+    public Integer eventType;
 
     /**
-     * 所属行业
+     * 所属行业代码
      */
-    private String industry;
+    public String industry;
 
     /**
-     * 所属具体行业
+     * 所属二级行业代码
      */
-    private String subIndustry;
-
+    public String subIndustry;
+    /**
+     * 所属二级行业名称
+     */
+    public String subIndustryName;
+    /**
+     * 所属三级行业代码
+     */
+    public String thrIndustry;
+    /**
+     * 所属三级行业名称
+     */
+    public String thrIndustryName;
+    /**
+     * 行业名称
+     */
+    public String industryName;
     /**
      * 创建时间
      */
-    private Date createTime;
+    public Date createTime;
 }

@@ -4,9 +4,10 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import com.platform.publicze_platform.Dao.ImgCompanyInfo;
 import com.platform.publicze_platform.Pojo.ImgCompanyInfoMapper;
-import com.platform.publicze_platform.Service.ImgCompanyInfoService;
+import com.platform.publicze_platform.Service.ImgCompanyInfoService;import java.util.List;
+
 @Service
-public class ImgCompanyInfoServiceImpl implements ImgCompanyInfoService{
+public class ImgCompanyInfoServiceImpl implements ImgCompanyInfoService {
 
     @Resource
     private ImgCompanyInfoMapper imgCompanyInfoMapper;
@@ -32,6 +33,11 @@ public class ImgCompanyInfoServiceImpl implements ImgCompanyInfoService{
     }
 
     @Override
+    public List<ImgCompanyInfo> selectByCompanyNo(String companyNo)
+    {
+        return imgCompanyInfoMapper.selectByCompanyNo(companyNo);
+    }
+    @Override
     public int updateByPrimaryKeySelective(ImgCompanyInfo record) {
         return imgCompanyInfoMapper.updateByPrimaryKeySelective(record);
     }
@@ -41,4 +47,9 @@ public class ImgCompanyInfoServiceImpl implements ImgCompanyInfoService{
         return imgCompanyInfoMapper.updateByPrimaryKey(record);
     }
 
+    @Override
+    public int insertList(List<ImgCompanyInfo> list) {
+        return imgCompanyInfoMapper.insertList(list);
+    }
 }
+

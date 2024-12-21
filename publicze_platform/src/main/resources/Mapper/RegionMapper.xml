@@ -120,8 +120,37 @@
   <select id="getAllByParenRegionNo" resultMap="BaseResultMap">
         <!--@mbg.generated-->
         select
-        <include refid="Base_Column_List"/>
+        <include refid="Base_Column_List" />
         from region
-        where paren_region_no=#{parenRegionNo,jdbcType=VARCHAR} order by region_no desc
+        where paren_region_no=#{parenRegionNo,jdbcType=VARCHAR}
+    </select>
+  <select id="getByAll" resultMap="BaseResultMap">
+        <!--@mbg.generated-->
+        select
+        <include refid="Base_Column_List" />
+        from region
+        <where>
+            <if test="id != null">
+                and id=#{id,jdbcType=INTEGER}
+            </if>
+            <if test="regionNo != null">
+                and region_no=#{regionNo,jdbcType=VARCHAR}
+            </if>
+            <if test="parenRegionNo != null">
+                and paren_region_no=#{parenRegionNo,jdbcType=VARCHAR}
+            </if>
+            <if test="isPopular != null">
+                and is_popular=#{isPopular,jdbcType=BIT}
+            </if>
+            <if test="name != null">
+                and `name`=#{name,jdbcType=VARCHAR}
+            </if>
+            <if test="remark != null">
+                and remark=#{remark,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                and create_time=#{createTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
     </select>
 </mapper>
