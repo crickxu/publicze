@@ -28,3 +28,18 @@ jobs:
         context: .
         push: true
         tags: ${{ secrets.ACR_REGISTRY }}/publicze:latest
+        
+    - name: Set up K8s tools
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'v1.20.7' # 设置你需要的 kubectl 版本
+    
+    - name: Decode kubeconfig and set KUBECONFIG environment variable
+      run: |
+        echo ${{ secrets.KUBECONFIG_BASE64 }} | base64 --decode > /tmp/kubeconfig.yaml
+        export KUBECONFIG=/tmp/kubeconfig.yaml
+        kubectl config view --raw > /tmp/kubeconfig.yaml  # 再次确认设置环境变量正确加载 kubeconfig 文件
+    
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f k8s-deployment.yaml  # 使用你的部署文件路径替换 k8s-deployment.yaml
