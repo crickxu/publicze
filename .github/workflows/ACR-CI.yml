@@ -12,10 +12,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       
-    - name: Set up JDK 11
+    - name: Set up JDK 8
       uses: actions/setup-java@v2
       with:
-        java-version: '11'
+        java-version: '8'
         distribution: 'adopt'
         
     - name: Build with Maven
@@ -24,11 +24,11 @@ jobs:
     - name: Login to ACR
       uses: aliyun/acr-login@v1
       with:
-        login-server: registry.cn-hangzhou.aliyuncs.com  # 根据你的ACR区域修改登录服务器地址
+        login-server: crpi-5ib73szbrjh3wsd8.cn-hangzhou.personal.cr.aliyuncs.com/deep-space1/registry  # 根据你的ACR区域修改登录服务器地址
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
         
     - name: Build and push Docker image
       run: |
-        docker build -t registry.cn-hangzhou.aliyuncs.com/yournamespace/yourrepo:latest .
-        docker push registry.cn-hangzhou.aliyuncs.com/yournamespace/yourrepo:latest
+        docker build -t crpi-5ib73szbrjh3wsd8.cn-hangzhou.personal.cr.aliyuncs.com/deep-space1/registry/publicze:latest .
+        docker push crpi-5ib73szbrjh3wsd8.cn-hangzhou.personal.cr.aliyuncs.com/deep-space1/registry/publicze:latest
