@@ -24,7 +24,7 @@ jobs:
     - name: Login to ACR
       uses: aliyun/acr-login@v1
       with:
-        login-server: crpi-5ib73szbrjh3wsd8.cn-hangzhou.personal.cr.aliyuncs.com/deep-space1/registry  # 根据你的ACR区域修改登录服务器地址
+        login-server: ${{ secrets.ACR_REGISTRY }}  # 根据你的ACR区域修改登录服务器地址
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
         
