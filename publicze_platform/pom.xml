@@ -6,7 +6,8 @@
         <groupId>com.platform</groupId>
         <artifactId>parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <!--<relativePath/> --> <!-- lookup parent from repository -->
+        <relativePath>./parent/pom.xml</relativePath>
     </parent>
     <groupId>com.platform</groupId>
     <artifactId>publicze_platform</artifactId>
