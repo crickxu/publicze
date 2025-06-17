@@ -21,5 +21,5 @@ public interface CompanyInfoMapper {
     int updateByPrimaryKey(CompanyInfo record);
     int updateImgPathByCompanyNo(@Param("companyNo") String companyNo,@Param("imgPath") String imgPath);
     CompanyInfo selectByCompanyInfo(String companyNo);
-    List<CompanyInfo> selectCompanys();
+    List<CompanyInfo> selectCompanys(CompanyInfo info);
 }

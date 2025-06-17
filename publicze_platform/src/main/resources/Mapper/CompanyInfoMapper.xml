@@ -46,6 +46,20 @@
     select
     <include refid="Base_Column_List"/>
     from company_info
+    <where>
+      <if test="provinceAddr != null">
+        and province_addr=#{provinceAddr,jdbcType=VARCHAR}
+      </if>
+      <if test="cityAddr !=null ">
+        and city_addr=#{cityAddr,jdbcType=VARCHAR}
+      </if>
+      <if test="industry !=null ">
+        and industry=#{industry,jdbcType=VARCHAR}
+      </if>
+      <if test="subIndustry !=null ">
+        and sub_industry=#{subIndustry,jdbcType=VARCHAR}
+      </if>
+    </where>
   </select>
   <select id="selectByCompanyInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
     <!--@mbg.generated-->
@@ -69,8 +83,8 @@
       thr_industry,thr_industry_name,industry_name,create_time)
     values (#{companyNo,jdbcType=VARCHAR}, #{userNo,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{creditCode,jdbcType=VARCHAR}, #{natureId,jdbcType=INTEGER}, #{natureName,jdbcType=VARCHAR}, #{scale,jdbcType=INTEGER},
-      #{provinceAddr,jdbcType=VARCHAR},#{provinceAddrName,jdbcType=VARCHAR}, #{cityAddr,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR},
-      #{cityAddrName,jdbcType=VARCHAR},#{introduction,jdbcType=LONGVARCHAR}, #{mobileNum,jdbcType=VARCHAR}, #{imgPath,jdbcType=VARCHAR},
+      #{provinceAddr,jdbcType=VARCHAR},#{provinceAddrName,jdbcType=VARCHAR}, #{cityAddr,jdbcType=VARCHAR},#{cityAddrName,jdbcType=VARCHAR},
+      #{contact,jdbcType=VARCHAR}, #{introduction,jdbcType=LONGVARCHAR}, #{mobileNum,jdbcType=VARCHAR}, #{imgPath,jdbcType=VARCHAR},
       #{eventType,jdbcType=INTEGER}, #{industry,jdbcType=VARCHAR}, #{subIndustry,jdbcType=VARCHAR},#{subIndustryName,jdbcType=VARCHAR},
     #{thrIndustry,jdbcType=VARCHAR},#{thrIndustryName,jdbcType=VARCHAR},#{industryName,jdbcType=VARCHAR},#{createTime,jdbcType=TIMESTAMP})
   </insert>

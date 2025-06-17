@@ -70,9 +70,9 @@ public class CompanyInfoServiceImpl implements CompanyInfoService {
         return companyInfoMapper.updateImgPathByCompanyNo(companyNo,imgPath);
     }
     @Override
-    public List<CompanyInfo> selectCompanys()
+    public List<CompanyInfo> selectCompanys(CompanyInfo info)
     {
-        return companyInfoMapper.selectCompanys();
+        return companyInfoMapper.selectCompanys(info);
     }
 }
 

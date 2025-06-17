@@ -1,16 +1,13 @@
 package com.platform.publicze_platform.Controller;
+import com.alibaba.fastjson.JSON;
+import com.platform.publicze_platform.Comment.EsOprate;
 import com.platform.publicze_platform.Dao.ImgCompanyInfo;
+import com.platform.publicze_platform.Dao.Product;
 import com.platform.publicze_platform.Dao.VideoCompanyInfo;
-import com.platform.publicze_platform.Service.CompanyInfoService;
-import com.platform.publicze_platform.Service.FastDSFClient;
-import com.platform.publicze_platform.Service.ImgCompanyInfoService;
-import com.platform.publicze_platform.Service.VideoCompanyInfoService;
-import com.platform.publicze_platform.Vto.StreamFileInfo;
-import com.platform.publicze_platform.Vto.filePropoty;
-import com.platform.publicze_platform.Vto.imgPropoty;
-import com.platform.publicze_platform.Vto.videoPropoty;
+import com.platform.publicze_platform.Service.*;
+import com.platform.publicze_platform.Vto.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,9 +15,13 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/file")
@@ -30,9 +31,17 @@ public class FileOprateController {
     @Autowired
     VideoCompanyInfoService videoCompanyInfoService;
     @Autowired
-    FastDSFClient fastDSFClient;
+    EsOprate esOprate;
     @Autowired
     CompanyInfoService companyInfoService;
+    @Autowired
+    MinioService minioService;
+    @Value("${image.server}")
+    String imageServer;
+    @Value("${minio.imageBucket}")
+    String imagebucket;
+    @Value("${minio.videoBucket}")
+    String videobucket;
     @PostMapping("upload")
     public void upload(@RequestParam("uploadimg") List<MultipartFile> imgs ,
                        @RequestParam("uploadvideo") List<MultipartFile> videos ,
@@ -41,61 +50,77 @@ public class FileOprateController {
                        @RequestParam("companyNo") String companyNo)
     {
         List<ImgCompanyInfo> imgPros = new ArrayList<>();
-        for(int i=0;i<imgs.size();i++)
-        {
-            String fileName = imgs.get(i).getOriginalFilename();
-            if(fileName.equals("uploadimg"))
-                continue;
-            try {
-                byte[] bytes =imgs.get(i).getBytes();
-                String[] infos= fastDSFClient.upload(bytes,fileName,"crick");
-                imgPropoty pro = imgspro.stream().filter(x->x.name.equals(fileName)).findFirst().get();
+        List<VideoCompanyInfo> videoPros = new ArrayList<>();
+        long timestamp = Instant.now().toEpochMilli();
+        try {
+            //标志是否是上传产品图片
+            boolean flag = true;
+            List<String> imgs_path = new ArrayList<>();
+            for (int i = 0; i < imgs.size(); i++) {
+                String fileName = imgs.get(i).getOriginalFilename();
+                String oldFileName = fileName.substring(0);
+                if (fileName.equals("uploadimg"))
+                    continue;
+                //byte[] bytes =imgs.get(i).getBytes();
+                imgPropoty pro = imgspro.stream().filter(x -> x.name.equals(oldFileName)).findFirst().get();
+                String[] splits = fileName.split("\\.");
+                String name= splits[0];
+                String ext =splits[1];
+
+                Base64.Encoder urlEncoder = Base64.getUrlEncoder(); // 使用URL安全的Base64编码器
+                String encodedString = urlEncoder.encodeToString(name.getBytes(StandardCharsets.UTF_8));
+                fileName = encodedString+':'+String.valueOf(timestamp)+'.'+ext;
+
+                minioService.uploadFile(imgs.get(i), imagebucket, fileName);
                 ImgCompanyInfo imgPro = new ImgCompanyInfo();
                 imgPro.companyNo = companyNo;
-                imgPro.groupName = infos[0];
-                imgPro.imgPath = infos[1];
+                imgPro.imgPath = imagebucket+'/'+fileName;
                 imgPro.imgTitle = pro.title;
                 imgPro.discription = pro.discrip;
-                imgPro.enable =true;
-                imgPro.isMainImg = pro.isMainImg==1?true:false;
+                imgPro.enable = true;
+                imgPro.isMainImg = pro.isMainImg == 1 ? true : false;
                 imgPro.createTime = new Date();
                 imgPros.add(imgPro);
                 //更改公司主图片
-                if(imgPro.isMainImg)
-                {
-                    companyInfoService.updateImgPathByCompanyNo(companyNo,imgPro.groupName+"/"+imgPro.imgPath);
+                if (imgPro.isMainImg) {
+                    flag =false;
+                    companyInfoService.updateImgPathByCompanyNo(companyNo, imgPro.imgPath);
                 }
+                //添加产品图片路径
+                else
+                    imgs_path.add(imgPro.imgPath);
             }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }
-        List<VideoCompanyInfo> videoPros = new ArrayList<>();
-        for(int j=0;j<videos.size();j++)
-        {
-            try {
+            if(flag)
+                esOprate.modifyImgPath(companyNo,imgs_path);
+            for (int j = 0; j < videos.size(); j++) {
                 String fileName = videos.get(j).getOriginalFilename();
-                if(fileName.equals("uploadvideo"))
+                String oldFileName = fileName.substring(0);
+                if (fileName.equals("uploadvideo"))
                     continue;
-                byte[] bytes =videos.get(j).getBytes();
+                //byte[] bytes =videos.get(j).getBytes();
+                String[] splits = fileName.split("\\.");
+                String name= splits[0];
+                String ext =splits[1];
 
-                String[] infos= fastDSFClient.upload(bytes,fileName,"crick");
-                videoPropoty pro = videospro.stream().filter(x->x.name.equals(fileName)).findFirst().get();
+                Base64.Encoder urlEncoder = Base64.getUrlEncoder(); // 使用URL安全的Base64编码器
+                String encodedString = urlEncoder.encodeToString(name.getBytes(StandardCharsets.UTF_8));
+                fileName = encodedString+':'+String.valueOf(timestamp)+'.'+ext;
+                minioService.uploadFile(imgs.get(j), videobucket, fileName);
+                videoPropoty pro = videospro.stream().filter(x -> x.name.equals(oldFileName)).findFirst().get();
                 VideoCompanyInfo videoPro = new VideoCompanyInfo();
                 videoPro.companyNo = companyNo;
-                videoPro.groupName = infos[0];
-                videoPro.videoPath = infos[1];
-                videoPro.videoTitle =pro.title;
+                videoPro.videoPath =videobucket+'/'+ fileName;
+                videoPro.videoTitle = pro.title;
                 videoPro.discription = pro.discrip;
                 videoPro.createTime = new Date();
                 videoPros.add(videoPro);
             }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
         }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        /*
         try
         {
             if(imgPros.size()>0) {
@@ -108,29 +133,59 @@ public class FileOprateController {
         catch (Exception e)
         {
             e.printStackTrace();
-        }
+        }*/
     }
     @GetMapping("filesInfo")
     public List<filePropoty> filesInfo(String companyNo)
     {
         try
         {
-            List<ImgCompanyInfo> imgCompanyInfos = imgCompanyInfoService.selectByCompanyNo(companyNo);
-            List<VideoCompanyInfo> videoCompanyInfos = videoCompanyInfoService.selectByCompanyNo(companyNo);
+            List<Product> products = esOprate.searchByNos(companyNo);
+            //List<ImgCompanyInfo> imgCompanyInfos = imgCompanyInfoService.selectByCompanyNo(companyNo);
+            //List<VideoCompanyInfo> videoCompanyInfos = videoCompanyInfoService.selectByCompanyNo(companyNo);
             List<filePropoty> filePropoties = new ArrayList<>();
-            if(imgCompanyInfos!=null)
-                imgCompanyInfos.forEach(x->{
+            if(products!=null)
+                for(Product pro : products)
+                {
                     filePropoty filePro = new filePropoty();
-                    filePro.id = x.id.toString();
+                    filePro.id = pro.productNo;
+                    filePro.title = pro.productName;
+                    filePro.fileType =0;
+                    filePro.companyNo = pro.companyNo;
+                    filePro.discrip = pro.productDes;
+                    filePro.isMainImg = false;
+                    filePro.proparams = JSON.parseArray(String.valueOf(pro.proParam)).toJavaList(proParam.class);
+                    if(pro.imgSrc!=null)
+                    {
+                        List<String> paths = new ArrayList<>();
+                        for (String img : pro.imgSrc) {
+                            String imgpath = imageServer + img;
+                            paths.add(imgpath);
+                        }
+                        filePro.filePaths =paths;
+                        //pro.imgSrc.stream().forEach(m->{
+                        //    m= imageServer+m;
+                        //});
+                        //pro.imgSrc.stream().map(m->"imageServer"+m).collect(Collectors.toList());
+                    }
+
+                    filePropoties.add(filePro);
+                }
+            /*
+                products.forEach(x->{
+                    filePropoty filePro = new filePropoty();
+                    filePro.id = x.productNo;
+                    filePro.title = x.productName;
                     filePro.fileType =0;
                     filePro.companyNo = x.companyNo;
-                    filePro.title = x.imgTitle;
-                    filePro.discrip = x.discription;
-                    filePro.isMainImg = x.isMainImg;
-                    filePro.groupName = x.groupName;
-                    filePro.filePath ="http://192.168.10.139/"+ x.groupName+"/"+x.imgPath;
+                    filePro.discrip = x.productDes;
+                    filePro.isMainImg = false;
+                    filePro.proparams = JSON.parseArray(String.valueOf(x.proParam)).toJavaList(proParam.class);
+                    x.imgSrc.stream().map(m->imageServer+m);
+                    filePro.filePaths =x.imgSrc;
                     filePropoties.add(filePro);
-                });
+                });*/
+            /* 视频文件管理
             if(videoCompanyInfos!=null)
             {
                 videoCompanyInfos.forEach(m->{
@@ -142,10 +197,10 @@ public class FileOprateController {
                     filePro.discrip = m.discription;
                     filePro.isMainImg = false;
                     filePro.groupName = m.groupName;
-                    filePro.filePath ="http://192.168.10.139/"+ m.groupName+"/"+m.videoPath;
+                    filePro.filePath =imageServer+m.videoPath;
                     filePropoties.add(filePro);
                 });
-            }
+            }*/
             return filePropoties;
         }
         catch (Exception e)
@@ -153,77 +208,5 @@ public class FileOprateController {
             e.printStackTrace();
             return null;
         }
-    }
-    //文件流方式获取图片或视频
-    @GetMapping("getFile")
-    public String getFileInfo(HttpServletResponse response, String companyNo)
-    {
-        List<StreamFileInfo> streamFileInfos;
-        try
-        {
-            List<ImgCompanyInfo> imgCompanyInfos = imgCompanyInfoService.selectByCompanyNo(companyNo);
-            List<VideoCompanyInfo> videoCompanyInfos = videoCompanyInfoService.selectByCompanyNo(companyNo);
-            streamFileInfos = new ArrayList<>();
-            response.setHeader("Content-Disposition", "attachment; ");
-            response.setContentType("application/octet-stream");
-            List<InputStream> inputStreams = new ArrayList<>();
-            if(imgCompanyInfos!=null&&imgCompanyInfos.size()>0) {
-                for (int i = 0; i < imgCompanyInfos.size(); i++) {
-                    String groupName= imgCompanyInfos.get(i).groupName;
-                    String filePathName = imgCompanyInfos.get(i).imgPath;
-                    InputStream stream = fastDSFClient.downStreamFile(groupName,filePathName);
-                    StreamFileInfo streamFileInfo = new StreamFileInfo();
-                    streamFileInfo.title =imgCompanyInfos.get(i).imgTitle;
-                    streamFileInfo.streamType = "img";
-                    streamFileInfo.imgStream = stream;
-                    inputStreams.add(stream);
-                    //IOUtils.copy(stream,response.getOutputStream());
-                    streamFileInfos.add(streamFileInfo);
-                }
-            }
-            try
-            {
-               ServletOutputStream outStream=  response.getOutputStream();
-
-               for (InputStream imageStream : inputStreams) {
-                  byte[] buffer = new byte[1024];
-                  int bytesRead;
-
-                // 写入图片的HTTP头信息
-                // 例如: Content-Type: image/jpeg
-                // ...
-
-                  while ((bytesRead = imageStream.read(buffer)) != -1) {
-                      outStream.write(buffer, 0, bytesRead);
-                  }
-
-                // 重置缓冲区以写入下一个图片
-                  outStream.flush();
-                  imageStream.close();
-              }
-               outStream.flush();
-               outStream.close();
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        } ;
-            if(videoCompanyInfos!=null&&videoCompanyInfos.size()>0)
-            {
-                for (int m = 0; m < videoCompanyInfos.size(); m++) {
-                    String groupName= videoCompanyInfos.get(m).groupName;
-                    String filePathName = videoCompanyInfos.get(m).videoPath;
-                    InputStream stream = fastDSFClient.downStreamFile(groupName,filePathName);
-                    StreamFileInfo streamFileInfo = new StreamFileInfo();
-                    streamFileInfo.title =videoCompanyInfos.get(m).videoTitle;
-                    streamFileInfo.streamType = "video";
-                    streamFileInfo.imgStream = stream;
-                    streamFileInfos.add(streamFileInfo);
-                }
-            }
-            return "inputStream";
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

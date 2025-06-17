@@ -20,6 +20,6 @@ public interface CompanyInfoService {
     int updateByPrimaryKey(CompanyInfo record);
     int updateImgPathByCompanyNo(String companyNo,String imgPath);
     CompanyInfo selectByCompanyInfo(String companyNo);
-    List<CompanyInfo> selectCompanys();
+    List<CompanyInfo> selectCompanys(CompanyInfo info);
 }
 
