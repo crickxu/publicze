@@ -4,7 +4,7 @@ FROM maven:3.5.0-jdk-8 AS build
 # 将源代码复制到容器中
 COPY /publicze_platform/src /home/app/src
 COPY /publicze_platform/pom.xml /home/app
- 
+COPY /parent/pom.xml /home/parent/pom.xml
 # 构建项目
 WORKDIR /home/app
 RUN mvn -f /home/app/pom.xml clean package
