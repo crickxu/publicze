@@ -35,7 +35,7 @@ jobs:
         username: '${{ secrets.ACR_USERNAME }}'  # GitHub的secrets变量
         password: '${{ secrets.ACR_PASSWORD }}'  # GitHub的secrets变量
     - name: Build Docker image 
-      run: docker build -t publicze-platform:v1.0.0 -f /publicze/Dockerfile .
+      run: docker build -t publicze-platform:v1.0.0 -f ../../Dockerfile .
 
     - name: Tag Docker image # 标记 Docker 镜像
       run: docker tag publicze-platform:latest https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry/publicze-platform:v1.0.0
