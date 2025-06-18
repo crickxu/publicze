@@ -41,7 +41,7 @@ jobs:
     #  run: docker tag publicze-platform:v1.0.0 https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry/publicze-platform:v1.0.0
 
     - name: Push Docker image # 推送 Docker 镜像到仓库
-      run: docker push https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry:v1.0.0
+      run: docker push registry.cn-hangzhou.aliyuncs.com/deep-space1/registry:v1.0.0
     #- name: Build and push Docker image for Backend
     #  uses: docker/build-push-action@v4
     #  with:
