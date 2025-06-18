@@ -31,7 +31,8 @@ jobs:
     - name: Login to ACR
       uses: aliyun/acr-login@v1
       with:
-        login-server: https://crpi-5ib73szbrjh3wsd8.cn-hangzhou.personal.cr.aliyuncs.com  # 你的ACR登录服务器地址，例如 registry.cn-hangzhou.aliyuncs.com
+        #login-server: https://crpi-5ib73szbrjh3wsd8.cn-hangzhou.personal.cr.aliyuncs.com
+        login-server: https://cn-hangzhou.personal.cr.aliyuncs.com  # 你的ACR登录服务器地址，例如 registry.cn-hangzhou.aliyuncs.com
         username: '${{ secrets.ACR_USERNAME }}'  # GitHub的secrets变量
         password: '${{ secrets.ACR_PASSWORD }}'  # GitHub的secrets变量
     - name: Build Docker image 
