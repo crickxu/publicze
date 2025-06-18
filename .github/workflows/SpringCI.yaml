@@ -37,5 +37,5 @@ jobs:
         
     - name: Build and push Docker image
       run: |
-        docker build -t https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry:${{ github.sha }} .
+        docker build -t https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry:latest
         docker push https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry:latest
