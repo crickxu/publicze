@@ -35,13 +35,13 @@ jobs:
         username: '${{ secrets.ACR_USERNAME }}'  # GitHub的secrets变量
         password: '${{ secrets.ACR_PASSWORD }}'  # GitHub的secrets变量
     - name: Build Docker image 
-      run: docker build -t publicze-platform:latest
+      run: docker build -t publicze-platform:v1.0.0 -f ../Dockerfile .
 
     - name: Tag Docker image # 标记 Docker 镜像
-      run: docker tag publicze-platform:latest https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry/publicze-platform:latest
+      run: docker tag publicze-platform:latest https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry/publicze-platform:v1.0.0
 
     - name: Push Docker image # 推送 Docker 镜像到仓库
-      run: docker push https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry/publicze-platform:latest
+      run: docker push https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry/publicze-platform:v1.0.0
     #- name: Build and push Docker image for Backend
     #  uses: docker/build-push-action@v4
     #  with:
