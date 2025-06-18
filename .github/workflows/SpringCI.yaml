@@ -34,17 +34,18 @@ jobs:
         login-server: https://crpi-5ib73szbrjh3wsd8.cn-hangzhou.personal.cr.aliyuncs.com  # 你的ACR登录服务器地址，例如 registry.cn-hangzhou.aliyuncs.com
         username: '${{ secrets.ACR_USERNAME }}'  # GitHub的secrets变量
         password: '${{ secrets.ACR_PASSWORD }}'  # GitHub的secrets变量
-    - name: Build and push Docker image for Backend
-      uses: docker/build-push-action@v4
-      with:
-        context: ./publicze # 确保这是你后端 Dockerfile 所在的目录相对于仓库根目录
-        file: ./publicze/Dockerfile # Dockerfile 的路径
-        push: true
-        tags: |
-           https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry:${{ github.sha }}
-           https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry:latest
+    #- name: Build and push Docker image for Backend
+    #  uses: docker/build-push-action@v4
+    #  with:
+    #    context: ./publicze # 确保这是你后端 Dockerfile 所在的目录相对于仓库根目录
+    #    file: ./publicze/Dockerfile # Dockerfile 的路径
+    #    push: true
+    #    tags: |
+    #       https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry:latest
+    #       https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry:latest
           # YOUR_ACR_NAMESPACE 替换为你的ACR命名空间
-    #- name: Build and push Docker image
-    #  run: |
-    #    docker build -t https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry:latest .
-    #    docker push https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry:latest
+    - name: Build and push Docker image
+      run: |
+        docker build -t publicze-platform:latest
+        docker tag publicze-platform:latest https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry/publicze-platform:latest
+        docker push https://registry.cn-hangzhou.aliyuncs.com/deep-space1/registry/publicze-platform:latest
